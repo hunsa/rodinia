@@ -227,21 +227,30 @@ function linear_interp2(m, X, Y)
     # Kind of assumes X and Y have same len!
     retval = Matrix{Float64}(undef, (1,length(X)))
 
+    #println("DIMS:", size(m))
     for i in 1:length(X)
         x_coord = X[i]
         y_coord = Y[i]
+        # println("x_coord: ", x_coord)
+        # println("y_coord: ", y_coord)
         l = trunc(Int32,x_coord)
         k = trunc(Int32,y_coord)
+        # println("l: ", l)
+        # println("k: ", k)
 
         a = x_coord - l
         b = y_coord - k
 
 #        print(@sprintf("xc: %f \t yc: %f \t i: %d \t l: %d \t k: %d \t a: %f \t b: %f,", x_coord, y_coord, i, l, k, a, b))
 #        print(@sprintf(" \t m[k,l]: %f \t m[k,l+1]: %f \t m[l+1,l]: %f \t m[k+1,l+1]: %f\n", m[k+1,l+1], m[k+1,l+2], m[k+2,l+1], m[k+2,l+2]))
-        new_val = (1.0 - a) * (1.0 - b) * m[k+1,l+1] +
-            a * (1.0 - b) * m[k+1,l+2] +
-            (1.0 - a) * b * m[k+2,l+1] +
-            a * b * m[k+2,l+2]
+        # new_val = (1.0 - a) * (1.0 - b) * m[k+1,l+1] +
+        #     a * (1.0 - b) * m[k+1,l+2] +
+        #     (1.0 - a) * b * m[k+2,l+1] +
+        #     a * b * m[k+2,l+2]
+        new_val = (1.0 - a) * (1.0 - b) * m[k,l] +
+            a * (1.0 - b) * m[k,l+1] +
+            (1.0 - a) * b * m[k+1,l] +
+            a * b * m[k+1,l+1]
 
         retval[1,i] = new_val
     end

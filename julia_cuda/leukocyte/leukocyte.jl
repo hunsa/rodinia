@@ -185,24 +185,26 @@ function main(args)
 
     # Report total program execution time
     print(@sprintf("\nTotal application run time: %.5f seconds\n",time() - program_start_time))
+    AVI_close(cell_file)
 end
 
 
 if abspath(PROGRAM_FILE) == @__FILE__
-    NVTX.stop()
+#    NVTX.stop()
     main(ARGS)
 
-    GC.gc()
+    GC.gc(true)
     if haskey(ENV, "PROFILE")
         # warm up
         for i in 1:5
             main(ARGS)
-            GC.gc()
+            GC.gc(true)
         end
 
         #empty!(CUDA.compilecache)
+        #empty!(CUDA.cufunction_cache)
 
-        NVTX.@activate begin
+#        NVTX.@activate begin
             for i in 1:5
                 GC.gc(true)
             end
@@ -210,7 +212,7 @@ if abspath(PROGRAM_FILE) == @__FILE__
             for i in 1:5
                 GC.gc(true)
             end
-            CUDA.@profile NVTX.@range "host" main(ARGS)   # measure execution time
-        end
+#            CUDA.@profile NVTX.@range "host" main(ARGS)   # measure execution time
+#        end
     end
 end
